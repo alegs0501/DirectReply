@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
+import kotlinx.android.synthetic.main.activity_direct_reply.*
 
 class DirectReplyActivity : AppCompatActivity() {
 
@@ -25,6 +26,8 @@ class DirectReplyActivity : AppCompatActivity() {
 
         createNotificationChanel(chanelID, "Noticias",
                 "Las noticias más interesantes")
+
+        handleIntent()
     }
 
     private fun createNotificationChanel(id: String, name: String, description: String){
@@ -56,6 +59,22 @@ class DirectReplyActivity : AppCompatActivity() {
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(notificationId, newMessageNotification)
+    }
+
+    fun handleIntent(){
+        val intent = this.intent
+        val remoteInput = RemoteInput.getResultsFromIntent(intent)
+        if(remoteInput != null){
+            val respuesta = remoteInput.getCharSequence(KEY_TEX_REPLY).toString()
+            textView.text = respuesta
+
+            val repliedNotification = Notification.Builder(this, chanelID)
+                    .setSmallIcon(android.R.drawable.ic_dialog_info)
+                    .setContentText("Respueta recibida")
+                    .build()
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.notify(notificationId, repliedNotification)
+        }
     }
 
 }
